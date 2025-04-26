@@ -1,0 +1,1437 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<title>Teste de Tipagem</title>
+<style>
+    :root {
+      --cor-primaria: #1c7c5a;
+      --cor-secundaria: #931c55;
+      --cor-botao: #8D2B34;
+      --cor-botao-hover: #a8323d;
+      --cor-botao-selecionado: #1CC27F;
+      --cor-botao-selecionado-hover: #16a56a;
+      --cor-resultado: #D45D7A;
+      --cor-resultado-calculado: #00cc66;
+      --cor-tipo: #8D2B34;
+      --cor-numero: #FFD700;
+      --cor-texto-numero: #8B4513;
+      --cor-destoante: #FFFF00;
+      --cor-texto-destoante: #138356;
+      --cor-modal: #FFFFD9;
+      --sombra: 0 4px 8px rgba(0,0,0,0.2);
+      --sombra-hover: 0 6px 12px rgba(0,0,0,0.3);
+      --transicao: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: var(--cor-primaria);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background-color: var(--cor-secundaria);
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      box-shadow: var(--sombra);
+      position: relative;
+      z-index: 10;
+    }
+
+    .navbar-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .tab {
+      cursor: pointer;
+      padding: 12px 10px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      transition: var(--transicao);
+      position: relative;
+      overflow: hidden;
+      min-width: 150px;
+    }
+
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: rgba(255,255,255,0.3);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .tab:hover {
+      background-color: #b13370;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .tab:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .tab.active-tab {
+      background-color: #d14d8a;
+      transform: translateY(-2px);
+      box-shadow: var(--sombra);
+    }
+
+    .tab.active-tab::after {
+      transform: scaleX(1);
+      background-color: white;
+    }
+
+    .content {
+      display: none;
+      opacity: 0;
+      padding: 25px 20px;
+      transition: opacity 0.5s ease-out;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .content.active {
+      display: block;
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: rgba(255,255,255,0.5);
+    }
+
+    .pergunta-container {
+      margin: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .numero-pergunta {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      background-color: var(--cor-numero);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      color: var(--cor-texto-numero);
+      box-shadow: var(--sombra);
+      margin: 10px auto -10px;
+    }
+
+    .pergunta-texto {
+      font-size: 16px;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      line-height: 1.6;
+      transition: var(--transicao);
+      padding: 15px 0;
+    }
+
+    .pergunta-texto:hover {
+      font-weight: bold;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 15px 0 25px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: var(--cor-botao);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: 'Arial', sans-serif;
+      cursor: pointer;
+      transition: var(--transicao);
+      box-shadow: var(--sombra);
+      min-width: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+
+    button:hover {
+      background-color: var(--cor-botao-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button.selected {
+      background-color: var(--cor-botao-selecionado);
+      transform: translateY(-2px);
+    }
+
+    button.selected:hover {
+      background-color: var(--cor-botao-selecionado-hover);
+    }
+
+    [id^="resultado"] {
+      text-align: center;
+      margin: 30px auto;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 15px;
+      background-color: var(--cor-resultado);
+      border-radius: 8px;
+      max-width: 80%;
+      box-shadow: var(--sombra);
+      transition: var(--transicao);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [id^="resultado"].resultado-calculado {
+      background-color: var(--cor-resultado-calculado);
+      color: #ffffff;
+      font-size: 24px;
+    }
+
+    .pontos-processando {
+      display: inline-block;
+      width: 20px;
+      text-align: left;
+    }
+
+    .pontos-processando span {
+      opacity: 0;
+      animation: piscarPontos 1.5s infinite;
+    }
+
+    .pontos-processando span:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .pontos-processando span:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    .pontos-processando span:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes piscarPontos {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .logo-container {
+      width: 70%;
+      max-width: 600px;
+      margin: 20px auto 40px;
+      transition: var(--transicao);
+    }
+
+    .logo-container:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .footer-text {
+      font-size: 12px;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      width: 80%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .footer-text a {
+      color: white;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    .footer-text a:hover {
+      color: #f0f0f0;
+    }
+
+    .result-container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 30px auto;
+      flex-wrap: wrap;
+    }
+
+    .result-box {
+      background-color: #FFFFD9;
+      color: #8D2B34;
+      padding: 20px;
+      border-radius: 12px;
+      font-family: 'Arial', sans-serif;
+      font-weight: bold;
+      text-align: center;
+      min-width: 160px;
+      flex: 1;
+      box-shadow: var(--sombra);
+      transition: var(--transicao);
+    }
+
+    .result-box:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .result-box div:first-child {
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .result-value {
+      font-size: 20px;
+      margin-top: 15px;
+      min-height: 28px;
+      transition: var(--transicao);
+    }
+
+    .result-box:hover .result-value {
+      font-size: 22px;
+    }
+
+    .type-box {
+      background-color: var(--cor-tipo);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin: 30px auto;
+      max-width: 800px;
+      font-family: 'Arial', sans-serif;
+      font-size: 28px;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: var(--sombra);
+      transition: var(--transicao);
+    }
+
+    .type-box:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .type-details {
+      display: flex;
+      flex-direction: row;
+      max-width: 900px;
+      margin: 30px auto;
+      gap: 20px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .type-image {
+      flex: 1;
+      max-width: 50%;
+      min-width: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: var(--transicao);
+    }
+
+    .type-image:hover {
+      transform: scale(1.05);
+    }
+
+    .type-image img {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      border-radius: 12px;
+      display: none;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+
+    .type-image img.visible {
+      display: block;
+    }
+
+    .type-image:hover img {
+      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+    }
+
+    .type-description {
+      flex: 1;
+      font-family: 'Arial', sans-serif;
+      text-align: left;
+      padding: 0 20px;
+    }
+
+    .type-title {
+      font-size: 26px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #f8f8f8;
+      text-transform: uppercase;
+      display: none;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .type-title.visible {
+      display: block;
+    }
+
+    .type-text {
+      font-size: 18px;
+      line-height: 1.7;
+      text-align: justify;
+      display: none;
+    }
+
+    .type-text.visible {
+      display: block;
+    }
+
+    #destoantesContainer {
+      width: 100%;
+      margin: 20px auto;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .destoante-box {
+      background-color: var(--cor-destoante);
+      color: var(--cor-texto-destoante);
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin-bottom: 15px;
+      box-shadow: var(--sombra);
+      cursor: pointer;
+      width: 100%;
+      max-width: 600px;
+      transition: var(--transicao);
+    }
+
+    .destoante-box:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: var(--cor-modal);
+      color: black;
+      width: 400px;
+      height: 400px;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      color: black;
+    }
+
+    .modal-close:hover {
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .navbar-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .tab {
+        min-width: 120px;
+        padding: 8px 5px;
+        font-size: 12px;
+      }
+      .type-details {
+        flex-direction: column;
+        align-items: center;
+      }
+      .type-image {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+      .type-description {
+        padding: 0;
+        text-align: center;
+      }
+      .type-text {
+        text-align: center;
+      }
+      .title {
+        font-size: 20px;
+      }
+      .type-box {
+        font-size: 22px;
+        padding: 15px;
+      }
+      .result-box {
+        min-width: 120px;
+        padding: 15px;
+      }
+      .result-box div:first-child {
+        font-size: 14px;
+      }
+      .result-value {
+        font-size: 18px;
+      }
+      .pergunta-container {
+        padding-left: 0;
+      }
+      .numero-pergunta {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+      }
+      [id^="resultado"].resultado-calculado {
+        font-size: 20px;
+      }
+      .modal-content {
+        width: 80%;
+        height: auto;
+        min-height: 300px;
+      }
+    }
+
+    @media (prefers-reduced-motion) {
+      .content, button, .tab, .result-box, .type-image, .type-box, .logo-container, .pontos-processando span, .destoante-box {
+        transition: none !important;
+        transform: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="navbar">
+<div class="navbar-container">
+<div class="tab" id="tab-inicio">PÁGINA INICIAL</div>
+<div class="tab" id="tab-orientacao">DICOTOMIA ORIENTAÇÃO</div>
+<div class="tab" id="tab-postura">DICOTOMIA POSTURA</div>
+<div class="tab" id="tab-enfoque">DICOTOMIA ENFOQUE</div>
+<div class="tab" id="tab-organizacao">DICOTOMIA ORGANIZAÇÃO</div>
+<div class="tab" id="tab-comunicacao">DICOTOMIA COMUNICAÇÃO</div>
+<div class="tab" id="tab-interpretacao">DICOTOMIA INTERPRETAÇÃO</div>
+<div class="tab" id="tab-resultado">RESULTADO TIPOLÓGICO</div>
+</div>
+</div>
+<div class="content active" id="inicio">
+<div class="title">Página Inicial</div>
+<p>Este teste é resultado do aprendizado adquirido durante o Curso de Tipagem, ministrado por <a href="https://www.instagram.com/roberta_bernardon/?igsh=NXdlNXp1em84azNl#" target="_blank">@RobertaBernardon</a> com base na teoria de Linda Berens.</p>
+<div class="logo-container">
+<img alt="ALLTYPES" src="ALLTYPES.png"/>
+</div>
+<p class="footer-text">TESTE ORGANIZADO E PRODUZIDO POR HERMES DAMIÃO BELLO</p>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('orientacao')" style="margin-top: 30px;">INICIAR TESTE</button></div>
+<div class="content" id="orientacao">
+<div class="title">DICOTOMIA ORIENTAÇÃO</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Geralmente durante uma conversa, quando algo me vem à cabeça, não consigo me conter e acabo interrompendo a outra pessoa para falar sobre isso.</p>
+<div class="button-container">
+<button onclick="responder('orientacao', 0, 'INICIADOR', this)">CONCORDO</button>
+<button onclick="responder('orientacao', 0, 'RESPONDEDOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Quase sempre não me importo se alguém está desinformado sobre algo, não é meu problema se ela está desatualizada.</p>
+<div class="button-container">
+<button onclick="responder('orientacao', 1, 'RESPONDEDOR', this)">CONCORDO</button>
+<button onclick="responder('orientacao', 1, 'INICIADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Usualmente durante uma conversa, prefiro terminar minha linha de pensamento, extraindo o que é possível sobre o tema, não gosto de mudança repentina de assunto.</p>
+<div class="button-container">
+<button onclick="responder('orientacao', 2, 'RESPONDEDOR', this)">CONCORDO</button>
+<button onclick="responder('orientacao', 2, 'INICIADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Minha maior tendência é escutar o que os outros têm a me dizer, é natural para mim guardar e processar o que me dizem antes de expor o que eu penso.</p>
+<div class="button-container">
+<button onclick="responder('orientacao', 3, 'RESPONDEDOR', this)">CONCORDO</button>
+<button onclick="responder('orientacao', 3, 'INICIADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Geralmente sou muito inquieto, tenho uma propensão de participar ativamente das coisas, adoro compartilhar assuntos, participar de conversas e frequentemente não percebo que posso estar incomodando.</p>
+<div class="button-container">
+<button onclick="responder('orientacao', 4, 'INICIADOR', this)">CONCORDO</button>
+<button onclick="responder('orientacao', 4, 'RESPONDEDOR', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoOrientacao">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('postura')" style="margin-top: 30px;">PRÓXIMA DICOTOMIA</button></div>
+<div class="content" id="postura">
+<div class="title">DICOTOMIA POSTURA</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Tenho uma certa impaciência, prefiro fazer as coisas, dar andamento às coisas ao invés de ficar aguardando.</p>
+<div class="button-container">
+<button onclick="responder('postura', 0, 'MOVIMENTADOR', this)">CONCORDO</button>
+<button onclick="responder('postura', 0, 'CONTROLADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Tendo a ser mais flexível, isso me ajuda a adaptar minhas ações conforme os problemas forem surgindo, isso me faz ser melhor contornando obstáculos do percurso.</p>
+<div class="button-container">
+<button onclick="responder('postura', 1, 'MOVIMENTADOR', this)">CONCORDO</button>
+<button onclick="responder('postura', 1, 'CONTROLADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Sou uma pessoa que preza pelo primor, na escola meus cadernos eram muito caprichados, meu estojo tinha cores de caneta para cada parte do texto.</p>
+<div class="button-container">
+<button onclick="responder('postura', 2, 'CONTROLADOR', this)">CONCORDO</button>
+<button onclick="responder('postura', 2, 'MOVIMENTADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Na execução do que deve ser feito tendo a ser mais vagaroso, gasto muito mais tempo refletindo sobre como deve ser feito, assim na hora da execução, o trabalho saia impecável.</p>
+<div class="button-container">
+<button onclick="responder('postura', 3, 'CONTROLADOR', this)">CONCORDO</button>
+<button onclick="responder('postura', 3, 'MOVIMENTADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Nas apresentações dos trabalhos da escola, eu geralmente não me preparava muito, estudava um pouco antes da aula e improvisava na hora a partir de algumas coisas que eu já sabia.</p>
+<div class="button-container">
+<button onclick="responder('postura', 4, 'MOVIMENTADOR', this)">CONCORDO</button>
+<button onclick="responder('postura', 4, 'CONTROLADOR', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoPostura">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('enfoque')" style="margin-top: 30px;">PRÓXIMA DICOTOMIA</button></div>
+<div class="content" id="enfoque">
+<div class="title">DICOTOMIA ENFOQUE</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Com frequência sou chamado(a) de "ovelha negra" da família, isso porque nos eventos familiares ou eu não participo ou quando participo acabo falando sobre assuntos que eles não curtem muito.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 0, 'PRAGMÁTICO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 0, 'AFILIATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Costumo me sentir desconfortável em ambientes de trabalho muito competitivos, com metas rígidas e cobranças constantes; esse tipo de clima acaba me desgastando bastante.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 1, 'AFILIATIVO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 1, 'PRAGMÁTICO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Sou uma pessoa bastante amistosa, gosto de participar dos rolês com os amigos e detesto gente monossilábica. Até porque se eu não estou interessado em conversar com alguém, tento dar um jeito menos babaca de sair da conversa.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 2, 'AFILIATIVO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 2, 'PRAGMÁTICO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Não gosto muito de fazer "a social", sou péssimo em fingir ser sociável com pessoas que não me interessam.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 3, 'PRAGMÁTICO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 3, 'AFILIATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Quando meus amigos ou familiares escolhem fazer algo em um lugar onde eu não gosto, geralmente prefiro não ir em vez de só ceder e participar.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 4, 'PRAGMÁTICO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 4, 'AFILIATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">6</div>
+<p class="pergunta-texto">Geralmente sou muito franco e sincero com as pessoas, mas não tenho intenção de machucá-las, então acabo sempre tendo que me desculpar para não magoar os outros.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 5, 'PRAGMÁTICO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 5, 'AFILIATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">7</div>
+<p class="pergunta-texto">Acredito que ao falar com outros é sempre bom pesar as palavras e durante a conversa ir tateando a reação da outra pessoa, isso me ajuda a ver se ela está sendo receptiva ou não com o que eu estou falando.</p>
+<div class="button-container">
+<button onclick="responder('enfoque', 6, 'AFILIATIVO', this)">CONCORDO</button>
+<button onclick="responder('enfoque', 6, 'PRAGMÁTICO', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoEnfoque">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('organizacao')" style="margin-top: 30px;">PRÓXIMA DICOTOMIA</button></div>
+<div class="content" id="organizacao">
+<div class="title">DICOTOMIA ORGANIZAÇÃO</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Eu entendo que as regras existem para que as coisas não virem uma baderna, mas também é necessário particularizar os casos, muitas vezes é preciso afrouxar as estruturas para que acordos benéficos sejam estabelecidos.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 0, 'INTERESSADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 0, 'ESTRUTURADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Curto manter minha rotina, fazer as coisas que geralmente faço no horário que faço, fico muito estressado quando um imprevisto acontece.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 1, 'ESTRUTURADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 1, 'INTERESSADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Se o meu trabalho exige que eu siga um protocolo de atendimento, busco sempre o seguir, não costumo abrir exceções a respeito disso.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 2, 'ESTRUTURADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 2, 'INTERESSADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Às vezes, por buscar garantir que as coisas funcionem, posso soar um pouco ríspido(a) na maneira de tratar as pessoas.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 3, 'ESTRUTURADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 3, 'INTERESSADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Para mim, justiça é aplicar o que é devido a cada indivíduo, não dá para sair batendo o martelo usando a mesma medida para todo mundo, até porque se uma pessoa furta alimentos para sustentar os filhos, ela não deve sofrer a mesma pena que uma pessoa que roubou por mero desejo e capricho.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 4, 'INTERESSADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 4, 'ESTRUTURADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">6</div>
+<p class="pergunta-texto">Pessoas que moralizam tudo são muito tediosas, penso que se as pessoas envolvidas numa situação não veem problema nela, não tem por que achar ruim.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 5, 'INTERESSADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 5, 'ESTRUTURADO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">7</div>
+<p class="pergunta-texto">Sou adepto ao ditado "o combinado não sai caro", afinal se a pessoa é adulta, ela é responsável e consciente das próprias ações.</p>
+<div class="button-container">
+<button onclick="responder('organizacao', 6, 'ESTRUTURADO', this)">CONCORDO</button>
+<button onclick="responder('organizacao', 6, 'INTERESSADO', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoOrganizacao">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('comunicacao')" style="margin-top: 30px;">PRÓXIMA DICOTOMIA</button></div>
+<div class="content" id="comunicacao">
+<div class="title">DICOTOMIA COMUNICAÇÃO</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Gosto de instigar as pessoas quando estou conversando com elas, acho mais interessante fazer um "charminho" ao invés de chegar já deixando claro minhas intenções.</p>
+<div class="button-container">
+<button onclick="responder('comunicacao', 0, 'INFORMATIVO', this)">CONCORDO</button>
+<button onclick="responder('comunicacao', 0, 'DIRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Minha fala tende a ser mais retilínea, conduzo o que eu falo de maneira mais centrada, raramente me perco ou me embaralho no que estou falando.</p>
+<div class="button-container">
+<button onclick="responder('comunicacao', 1, 'DIRETO', this)">CONCORDO</button>
+<button onclick="responder('comunicacao', 1, 'INFORMATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Meus amigos e colegas costumam falar que eu passo muito uma vibe "professor", isso porque eu normalmente trago muito contexto na minha comunicação, e descrevo muito sobre as coisas que falo.</p>
+<div class="button-container">
+<button onclick="responder('comunicacao', 2, 'INFORMATIVO', this)">CONCORDO</button>
+<button onclick="responder('comunicacao', 2, 'DIRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Detesto fazer rodeios para falar o que eu pretendo, prefiro chegar e já falar o que está acontecendo do que preparar a outra pessoa para receber a informação.</p>
+<div class="button-container">
+<button onclick="responder('comunicacao', 3, 'DIRETO', this)">CONCORDO</button>
+<button onclick="responder('comunicacao', 3, 'INFORMATIVO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Com frequência sou mal interpretado pelas pessoas, acho que é porque eu costumo oscilar muito sutilmente na minha forma de falar, às vezes começo falando sério, depois faço graça e ironizo e isso acaba meio que "bugando" as pessoas.</p>
+<div class="button-container">
+<button onclick="responder('comunicacao', 4, 'INFORMATIVO', this)">CONCORDO</button>
+<button onclick="responder('comunicacao', 4, 'DIRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoComunicacao">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('interpretacao')" style="margin-top: 30px;">PRÓXIMA DICOTOMIA</button></div>
+<div class="content" id="interpretacao">
+<div class="title">DICOTOMIA INTERPRETAÇÃO</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">1</div>
+<p class="pergunta-texto">Tendo a ser uma pessoa mais cética, bem mais pé no chão. Muito raro eu cair nesse papinho de signo e outras coisas afins.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 0, 'CONCRETO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 0, 'ABSTRATO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">2</div>
+<p class="pergunta-texto">Posso parecer meio acomodado e conformado para as pessoas, mas é que eu gosto de focar mais no que é presente agora. Esse negócio de ir atrás dos sonhos e ideais não cola comigo, nem tudo é possível de se realizar.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 1, 'CONCRETO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 1, 'ABSTRATO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">3</div>
+<p class="pergunta-texto">Minha inclinação maior é divagar nas coisas que podem acontecem futuramente, penso bastante sobre como pode ser a sociedade do futuro, as novas tecnologias que podem surgir e o que eu poderia estar fazendo nessas novas situações.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 2, 'ABSTRATO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 2, 'CONCRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">4</div>
+<p class="pergunta-texto">Tenho bastante maestria com coisas artesanais, seja em cozinhar, costurar, desenhar, manusear ou de mais artesanatos. Sinto um grande prazer em cada etapa do processo disso.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 3, 'CONCRETO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 3, 'ABSTRATO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">5</div>
+<p class="pergunta-texto">Costumo ser uma pessoa precavida, é natural para mim elucubrar coisas que podem me acometer e já me preparo mentalmente para lidar com elas.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 4, 'ABSTRATO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 4, 'CONCRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">6</div>
+<p class="pergunta-texto">Meus amigos e familiares frequentemente falam que eu "viajo na maionese", mas é que é muito bacana ficar pensamento nas alternativas das coisas, se as coisas fossem de outra maneira, se a história tivesse sido diferente.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 5, 'ABSTRATO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 5, 'CONCRETO', this)">DISCORDO</button>
+</div>
+</div>
+<div class="pergunta-container">
+<div class="numero-pergunta">7</div>
+<p class="pergunta-texto">Adoro livros e filmes investigativos e de suspense, perceber os cenários de crimes, analisar as inconsistências, prestar atenção nos detalhes e ir associando os materiais. Geralmente eu sou bem assertivo em quem cometeu o crime só observando tudo isso.</p>
+<div class="button-container">
+<button onclick="responder('interpretacao', 6, 'CONCRETO', this)">CONCORDO</button>
+<button onclick="responder('interpretacao', 6, 'ABSTRATO', this)">DISCORDO</button>
+</div>
+</div>
+<div id="resultadoInterpretacao">PROCESSANDO<span class="pontos-processando"><span>.</span><span>.</span><span>.</span></span></div>
+<button onclick="new Audio('dicbotton.mp3').play(); mostrarAba('resultado')" style="margin-top: 30px;">VER RESULTADO</button></div>
+<div class="content" id="resultado">
+<div class="title">RESULTADO TIPOLÓGICO</div>
+<div class="result-container">
+<div class="result-box">
+<div>TEMPERAMENTO</div>
+<div class="result-value" id="temperamento">PROCESSANDO...</div>
+</div>
+<div class="result-box">
+<div>ESTILO</div>
+<div class="result-value" id="estilo">PROCESSANDO...</div>
+</div>
+<div class="result-box">
+<div>ORIENTAÇÃO</div>
+<div class="result-value" id="orientacaoFinal">PROCESSANDO...</div>
+</div>
+</div>
+<div class="type-box" id="typeBox"></div>
+<div class="type-details">
+<div class="type-image">
+<img alt="Imagem do Tipo" id="typeImage" src=""/>
+</div>
+<div class="type-description">
+<div class="type-title" id="typeTitle"></div>
+<div class="type-text" id="typeText"></div>
+</div>
+</div>
+<div id="destoantesContainer"></div>
+</div>
+<div class="modal" id="modalDestoante">
+<div class="modal-content">
+<span class="modal-close">×</span>
+<p id="modalText"></p>
+</div>
+</div>
+</body>
+<script>
+    const respostas = {
+      orientacao: Array(5).fill(null),
+      postura: Array(5).fill(null),
+      enfoque: Array(7).fill(null),
+      organizacao: Array(7).fill(null),
+      comunicacao: Array(5).fill(null),
+      interpretacao: Array(5).fill(null)
+    };
+
+    const resultados = {
+      orientacao: null,
+      postura: null,
+      enfoque: null,
+      organizacao: null,
+      comunicacao: null,
+      interpretacao: null
+    };
+
+    let tipoAtual = null;
+    let audioAtual = null;
+
+    const tipoDescrições = {
+      'ENTP': {
+        titulo: 'ENTP - O VISIONÁRIO',
+        texto: 'Linda Berens caracteriza o ENTP como o "Explorador Conceitual" – um tipo curioso e inventivo, que enxerga possibilidades onde outros veem limites. Mestres em conectar ideias aparentemente desconexas, desafiam o status quo com perguntas provocativas e soluções inusitadas. Como Avançadores (NT), são estimulados por debates intelectuais e cenários de "e se...", muitas vezes atuando como catalisadores de mudanças. Sua mente ágil pode dispersar-se em múltiplos projetos simultâneos. O desafio é equilibrar entusiasmo teórico com implementação prática, desenvolvendo foco sem sacrificar criatividade.',
+        imagem: 'ENTP.jpg'
+      },
+      'ENTJ': {
+        titulo: 'ENTJ - O ESTRATEGISTA',
+        texto: 'Linda Berens descreve o ENTJ como o "Estrategista" – um tipo visionário e determinado, que enxerga padrões complexos e mobiliza pessoas para alcançar objetivos audaciosos. Líderes natos, combinam lógica implacável com uma energia contagiante para implementar mudanças. Como Avançadores (NT), são mestres em antecipar tendências e criar sistemas eficientes, sempre com foco em resultados mensuráveis. Sua postura direta pode ser interpretada como autoritária, mas seu real propósito é otimizar processos. O desafio está em equilibrar ambição com empatia, reconhecendo que colaboração genuína potencializa seus projetos.',
+        imagem: 'ENTJ.jpg'
+      },
+      'ENFP': {
+        titulo: 'ENFP - O BARDO',
+        texto: 'Como Idealistas (NF), os ENFPs são catalisadores sociais que enxergam o melhor nas pessoas. Berens os descreve como "ativadores de talentos", capazes de inspirar mudanças através de conexões autênticas e visões contagiantes. Sua genialidade está em transformar ideias abstratas em movimentos coletivos, unindo diversidade sob propósitos comuns. Comunicadores natos, dão voz a causas invisíveis. Desafio É manter foco em metas concretas sem perder sua essência adaptável - equilibrar entusiasmo com realização sustentável.',
+        imagem: 'ENFP.jpg'
+      },
+      'ENFJ': {
+        titulo: 'ENFJ - O CLÉRIGO',
+        texto: 'Berens descreve o ENFJ como "Catalisadores de Potencial Humano" – líderes natos que enxergam e ativam o melhor nos outros. Com uma habilidade ímpar para criar harmonia social, transformam visões coletivas em realidades tangíveis. Como Idealista (NF), combinam calor humano com estratégia, mobilizando grupos através de conexões autênticas. Seu carisma natural máscara um intelecto agudo voltado para o desenvolvimento alheio. O desfaio se dá quando sob pressão, podem negligenciar análises objetivas em favor de consensos superficiais, perdendo-se na complexidade de sistemas impessoais que exigem rigor crítico.',
+        imagem: 'ENFJ.jpg'
+      },
+      'ESTP': {
+        titulo: 'ESTP - O GLADIADOR',
+        texto: 'Linda Berens descreve o ESTP como o "Operador" – um tipo independente e engenhoso, com talento para entender sistemas e resolver problemas concretos. Mestres da lógica prática, aprendem fazendo e valorizam eficiência acima de tudo. Como Artífices (SP), são observadores aguçados que atuam com precisão técnica, muitas vezes em profissões que exigem habilidades manuais ou análise objetiva. Preferem trabalhar sozinhos, confiando em sua competência silenciosa. Seu desafio é equilibrar ceticismo com abertura a perspectivas alheias, evitando isolamento excessivo.',
+        imagem: 'ESTP.jpg'
+      },
+      'ESTJ': {
+        titulo: 'ESTJ - O JUIZ',
+        texto: 'Linda Berens descreve o ESTJ como um tipo executor, voltado para ordem, eficiência e resultados (com Thinking Extravertido dominante). Como parte do temperamento Guardião (SJ), valoriza regras, estabilidade e experiências comprovadas (usando Introverted Sensing como função auxiliar). Líderes natos em ambientes estruturados, os ESTJs são decisivos e confiáveis, mas podem ser vistos como inflexíveis quando resistem a mudanças abruptas (sua função inferior é Extraverted Intuition). Eles brilham em funções que exigem atenção a detalhes e preservação de padrões, enquanto trabalham para desenvolver maior abertura ao novo.',
+        imagem: 'ESTJ.jpg'
+      },
+      'ESFP': {
+        titulo: 'ESFP - O PERFORMADOR',
+        texto: 'Berens descreve o ESFP como o "Improvisador" – um tipo espontâneo e envolvente que transforma ambientes com energia contagiante. Artistas natos da vida real, priorizam experiências vívidas e conexões autênticas, adaptando-se com flexibilidade aos imprevistos. Como parte dos Artífices (SP), são mestres em ler situações e responder com soluções práticas no momento. Seu talento para animar grupos esconde uma profunda lealdade aos valores pessoais. O desafio está em equilibrar liberdade com responsabilidade, evitando decisões impulsivas.',
+        imagem: 'ESFP.jpg'
+      },
+      'ESFJ': {
+        titulo: 'ESFJ - O CAVALEIRO',
+        texto: 'Linda Berens caracteriza o ESFJ como um tipo protetor, voltado para harmonia, cuidado e responsabilidade social (com Feeling Extravertido dominante). Integrante do temperamento Guardião (SJ), valoriza tradições, segurança e bem-estar coletivo (usando Introverted Sensing como função auxiliar). Anfitriões natos em ambientes sociais, os ESFJs são atenciosos e cooperativos, mas podem ser percebidos como controladores quando excessivamente preocupados com aprovação alheia (sua função inferior é Introverted Thinking). Eles se destacam ao criar vínculos e manter estruturas de apoio, embora precisem equilibrar altruísmo com autoproteção.',
+        imagem: 'ESFJ.jpg'
+      },
+      'INTP': {
+        titulo: 'INTP - O SÁBIO',
+        texto: 'Berens descreve o INTP como "Arquitetos de Sistemas" – mentes analíticas que decifram a realidade através de modelos lógicos. Exploradores incansáveis de padrões, vivem para desconstruir e reconstruir ideias, priorizando coerência teórica acima de tudo. Como Avançadores (NT), destacam-se pela capacidade de identificar inconsistências e criar estruturas conceituais elegantes. Sua comunicação direta e não convencional reflete um pensamento radicalmente independente. O desafio é reconhecer que a eficácia de suas ideias depende não apenas da lógica, mas também de conectar-se emocionalmente com aqueles que precisam compreendê-las e aplicá-las.',
+        imagem: 'INTP.jpg'
+      },
+      'INTJ': {
+        titulo: 'INTJ - O ARQUEIRO',
+        texto: 'Linda Berens caracteriza o INTJ como o "Estrategista Visionário" – pensadores profundos que combinam análise rigorosa com uma capacidade singular de transformar conceitos abstratos em sistemas eficazes. São os arquitetos de mudanças estruturais, sempre projetando soluções inovadoras para problemas complexos. Como parte dos Avançadores (NT), destacam-se por sua mente estratégica e foco implacável em longo prazo. Têm um talento único para identificar padrões invisíveis aos outros e antecipar tendências com anos de antecedência. Seu maior desafio? Humanizar sua genialidade – aprender que a verdadeira inovação requer não apenas lógica impecável, mas também conexão com as necessidades emocionais daqueles que implementarão suas visões.',
+        imagem: 'INTJ.jpg'
+      },
+      'INFP': {
+        titulo: 'INFP - O CURANDEIRO',
+        texto: 'Como Idealistas (NF), os INFPs são tecelões de significado, transformando valores profundos em expressões autênticas. Berens os descreve como "alquimistas emocionais", convertendo dor em beleza e conflito em reconciliação. Sua essência é harmonizar contradições humanas através de metáforas vívidas e criações simbólicas, sempre guiados por sua bússola moral interna. O Desafio É equilibrar sua rica vida interior com a necessidade de estruturar e comunicar suas visões ao mundo de forma objetiva e acessível, sem trair sua sensibilidade única.',
+        imagem: 'INFP.jpg'
+      },
+      'INFJ': {
+        titulo: 'INFJ - O PALADINO',
+        texto: 'Como Idealistas (NF), os INFJs são arquitetos de significado, combinando intuição profunda com um talento singular para guiar indivíduos em seu crescimento pessoal. Berens os descreve como "integradores de visões", capazes de traduzir insights complexos em orientações práticas. Sua força está em antecipar padrões sociais e desenvolver estratégias de transformação humana, sempre com sensibilidade ética. O Desafio É ancorar suas percepções abstratas na realidade imediata, aprendendo a valorizar dados concretos e experiências tangíveis sem perder sua visão holística.',
+        imagem: 'INFJ.jpg'
+      },
+      'ISTP': {
+        titulo: 'ISTP - O OPERADOR',
+        texto: 'Linda Berens descreve o ISTP como o "Operador" – um tipo independente e engenhoso, com talento para entender sistemas e resolver problemas concretos. Mestres da lógica prática, aprendem fazendo e valorizam eficiência acima de tudo. Como Artífices (SP), são observadores aguçados que atuam com precisão técnica, muitas vezes em profissões que exigem habilidades manuais ou análise objetiva. Preferem trabalhar sozinhos, confiando em sua competência silenciosa. Seu desafio é equilibrar ceticismo com abertura a perspectivas alheias, evitando isolamento excessivo.',
+        imagem: 'ISTP.jpg'
+      },
+      'ISTJ': {
+        titulo: 'ISTJ - O ARQUIVISTA',
+        texto: 'Linda Berens descreve o ISTJ como um tipo inspetor, orientado por dever, precisão e fatos concretos (com Introverted Thinking dominante). Como parte do temperamento Guardião (SJ), valoriza procedimentos comprovados, responsabilidade e sistemas confiáveis (usando Extraverted Sensing como função auxiliar). Executores discretos e minuciosos, os ISTJs são mestres em manter estruturas e cumprir prazos, mas podem ser vistos como inflexíveis quando resistem a mudanças abruptas (sua função inferior é Extraverted Intuition). Eles brilham em funções que exigem atenção a detalhes e preservação de padrões, enquanto trabalham para desenvolver maior abertura ao novo.',
+        imagem: 'ISTJ.jpg'
+      },
+      'ISFP': {
+        titulo: 'ISFP - O ARTISTA',
+        texto: 'Linda Berens caracteriza o ISFP como o "Compositor" – um tipo autêntico e observador, que valoriza a beleza, a liberdade individual e a harmonia prática. Artistas da vida cotidiana, expressam seus valores profundos através de ações concretas, não palavras. Como Artífices (SP), são adaptáveis e presentes no momento, com uma sensibilidade aguçada para estética e necessidades alheias. Preferem trabalhar nos bastidores, evitando conflitos ou estruturas rígidas. Seu desafio é equilibrar idealismo com realismo, aprendendo a defender seus limites sem culpa.',
+        imagem: 'ISFP.jpg'
+      },
+      'ISFJ': {
+        titulo: 'ISFJ - O DEFENSOR',
+        texto: 'Linda Berens descreve o ISFJ como um tipo defensor, orientado por Introverted Sensing (Si) dominante – sua memória afetiva e atenção a detalhes concretos. Como Guardião (SJ), valoriza harmonia, dever e cuidado prático (Função Auxiliar: Extraverted Feeling - Fe). Protetores naturais, os ISFJs antecipam necessidades alheias com discreta eficiência. Seu desafio está na Função Inferior: Extraverted Intuition (Ne) – podem resistir a mudanças abruptas ou teorias abstratas, preferindo o conhecido. Quando sob estresse, tendem a catastrofizar possibilidades.',
+        imagem: 'ISFJ.jpg'
+      }
+    };
+
+    function inicializarNavegacao() {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const abaId = tab.id.replace('tab-', '');
+          mostrarAba(abaId);
+          const dicButtonSound = new Audio('dicbotton.mp3');
+          dicButtonSound.volume = 0.5;
+          dicButtonSound.play();
+        });
+      });
+      mostrarAba('inicio');
+
+      const modal = document.getElementById('modalDestoante');
+      const closeModal = document.querySelector('.modal-close');
+      closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+
+    function mostrarAba(abaId) {
+      document.querySelectorAll('.content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active-tab');
+      });
+
+      const content = document.getElementById(abaId);
+      const tab = document.getElementById(`tab-${abaId}`);
+      if (content && tab) {
+        content.classList.add('active');
+        tab.classList.add('active-tab');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (abaId === 'resultado') {
+        calcularResultados();
+      }
+    }
+
+    function responder(dicotomia, indice, valor, botao) {
+      respostas[dicotomia][indice] = valor;
+      const botoes = botao.parentElement.querySelectorAll('button');
+      botoes.forEach(b => b.classList.remove('selected'));
+      botao.classList.add('selected');
+
+      const buttonSound = new Audio('Buttonsound.mp3');
+      buttonSound.play();
+
+      calcularResultadoDicotomia(dicotomia);
+    }
+
+    function calcularResultadoDicotomia(dicotomia) {
+      const resp = respostas[dicotomia];
+      const totalRespostas = resp.filter(r => r !== null).length;
+      const minRespostas = dicotomia === 'enfoque' || dicotomia === 'organizacao' ? 7 : 5;
+      if (totalRespostas < minRespostas) return;
+
+      const contagem = {};
+      resp.forEach(r => {
+        if (r) contagem[r] = (contagem[r] || 0) + 1;
+      });
+
+      let resultado;
+      if (dicotomia === 'orientacao') {
+        resultado = contagem['INICIADOR'] > contagem['RESPONDEDOR'] ? 'INICIADOR' : 'RESPONDEDOR';
+      } else if (dicotomia === 'postura') {
+        resultado = contagem['MOVIMENTADOR'] > contagem['CONTROLADOR'] ? 'MOVIMENTADOR' : 'CONTROLADOR';
+      } else if (dicotomia === 'enfoque') {
+        resultado = contagem['PRAGMÁTICO'] > contagem['AFILIATIVO'] ? 'PRAGMÁTICO' : 'AFILIATIVO';
+      } else if (dicotomia === 'organizacao') {
+        resultado = contagem['INTERESSADO'] > contagem['ESTRUTURADO'] ? 'INTERESSADO' : 'ESTRUTURADO';
+      } else if (dicotomia === 'comunicacao') {
+        resultado = contagem['INFORMATIVO'] > contagem['DIRETO'] ? 'INFORMATIVO' : 'DIRETO';
+      } else if (dicotomia === 'interpretacao') {
+        resultado = contagem['CONCRETO'] > contagem['ABSTRATO'] ? 'CONCRETO' : 'ABSTRATO';
+      }
+
+      resultados[dicotomia] = resultado;
+      const elementoResultado = document.getElementById(`resultado${dicotomia.charAt(0).toUpperCase() + dicotomia.slice(1)}`);
+      elementoResultado.textContent = resultado;
+      elementoResultado.classList.add('resultado-calculado');
+
+      const beep = new Audio('beepresultado.mp3');
+      beep.volume = 0.6;
+      beep.play();
+    }
+
+    function calcularTemperamento() {
+      const enfoque = resultados.enfoque;
+      const interpretacao = resultados.interpretacao;
+      if (!enfoque || !interpretacao) return 'PROCESSANDO...';
+
+      let temperamento;
+      if (interpretacao === 'ABSTRATO') {
+        if (enfoque === 'AFILIATIVO') {
+          temperamento = 'DIPLOMÁTICO';
+        } else {
+          temperamento = 'ANALISTA';
+        }
+      } else {
+        if (enfoque === 'AFILIATIVO') {
+          temperamento = 'SENTINELA';
+        } else {
+          temperamento = 'ARTÍFICE';
+        }
+      }
+
+      const respostasEnfoque = respostas.enfoque.filter(r => r !== null).length;
+      const respostasInterpretacao = respostas.interpretacao.filter(r => r !== null).length;
+      if (respostasEnfoque >= 7 && respostasInterpretacao >= 5) {
+        if (enfoque === 'AFILIATIVO' && interpretacao === 'ABSTRATO') {
+          temperamento = 'DIPLOMÁTICO';
+        } else if (enfoque === 'AFILIATIVO' && interpretacao === 'CONCRETO') {
+          temperamento = 'SENTINELA';
+        }
+      }
+
+      return temperamento;
+    }
+
+    function calcularEstilo() {
+      const orientacao = resultados.orientacao;
+      const postura = resultados.postura;
+      if (!orientacao || !postura) return 'PROCESSANDO...';
+
+      if (orientacao === 'INICIADOR') {
+        return postura === 'MOVIMENTADOR' ? 'INAUGURADOR' : 'ESTRUTURADOR';
+      } else {
+        return postura === 'MOVIMENTADOR' ? 'BASTIDOR' : 'FINALIZADOR';
+      }
+    }
+
+    function calcularTipoPersonalidade() {
+      if (Object.values(resultados).some(r => !r)) return 'PROCESSANDO...';
+
+      const orientacao = resultados.orientacao === 'INICIADOR' ? 'E' : 'I';
+      const enfoque = resultados.enfoque === 'PRAGMÁTICO' ? 'T' : 'F';
+      const interpretacao = resultados.interpretacao === 'CONCRETO' ? 'S' : 'N';
+      const organizacao = resultados.organizacao === 'INTERESSADO' ? 'P' : 'J';
+
+      return orientacao + interpretacao + enfoque + organizacao;
+    }
+
+    function verificarDestoantes(tipo) {
+      const gabarito = {
+        'ENTP': { orientacao: 'INICIADOR', postura: 'MOVIMENTADOR', enfoque: 'PRAGMÁTICO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'ENTJ': { orientacao: 'INICIADOR', postura: 'CONTROLADOR', enfoque: 'PRAGMÁTICO', organizacao: 'ESTRUTURADO', comunicacao: 'DIRETO', interpretacao: 'ABSTRATO' },
+        'ENFP': { orientacao: 'INICIADOR', postura: 'MOVIMENTADOR', enfoque: 'AFILIATIVO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'ENFJ': { orientacao: 'INICIADOR', postura: 'CONTROLADOR', enfoque: 'AFILIATIVO', organizacao: 'ESTRUTURADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'ESTP': { orientacao: 'INICIADOR', postura: 'MOVIMENTADOR', enfoque: 'PRAGMÁTICO', organizacao: 'INTERESSADO', comunicacao: 'DIRETO', interpretacao: 'CONCRETO' },
+        'ESTJ': { orientacao: 'INICIADOR', postura: 'CONTROLADOR', enfoque: 'PRAGMÁTICO', organizacao: 'ESTRUTURADO', comunicacao: 'DIRETO', interpretacao: 'CONCRETO' },
+        'ESFP': { orientacao: 'INICIADOR', postura: 'MOVIMENTADOR', enfoque: 'AFILIATIVO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'CONCRETO' },
+        'ESFJ': { orientacao: 'INICIADOR', postura: 'CONTROLADOR', enfoque: 'AFILIATIVO', organizacao: 'ESTRUTURADO', comunicacao: 'INFORMATIVO', interpretacao: 'CONCRETO' },
+        'INTP': { orientacao: 'RESPONDEDOR', postura: 'MOVIMENTADOR', enfoque: 'PRAGMÁTICO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'INTJ': { orientacao: 'RESPONDEDOR', postura: 'CONTROLADOR', enfoque: 'PRAGMÁTICO', organizacao: 'ESTRUTURADO', comunicacao: 'DIRETO', interpretacao: 'ABSTRATO' },
+        'INFP': { orientacao: 'RESPONDEDOR', postura: 'MOVIMENTADOR', enfoque: 'AFILIATIVO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'INFJ': { orientacao: 'RESPONDEDOR', postura: 'CONTROLADOR', enfoque: 'AFILIATIVO', organizacao: 'ESTRUTURADO', comunicacao: 'INFORMATIVO', interpretacao: 'ABSTRATO' },
+        'ISTP': { orientacao: 'RESPONDEDOR', postura: 'MOVIMENTADOR', enfoque: 'PRAGMÁTICO', organizacao: 'INTERESSADO', comunicacao: 'DIRETO', interpretacao: 'CONCRETO' },
+        'ISTJ': { orientacao: 'RESPONDEDOR', postura: 'CONTROLADOR', enfoque: 'PRAGMÁTICO', organizacao: 'ESTRUTURADO', comunicacao: 'DIRETO', interpretacao: 'CONCRETO' },
+        'ISFP': { orientacao: 'RESPONDEDOR', postura: 'MOVIMENTADOR', enfoque: 'AFILIATIVO', organizacao: 'INTERESSADO', comunicacao: 'INFORMATIVO', interpretacao: 'CONCRETO' },
+        'ISFJ': { orientacao: 'RESPONDEDOR', postura: 'CONTROLADOR', enfoque: 'AFILIATIVO', organizacao: 'ESTRUTURADO', comunicacao: 'INFORMATIVO', interpretacao: 'CONCRETO' }
+      };
+
+      const destoantes = [];
+      if (gabarito[tipo]) {
+        Object.keys(resultados).forEach(dicotomia => {
+          if (resultados[dicotomia] && resultados[dicotomia] !== gabarito[tipo][dicotomia]) {
+            destoantes.push({
+              dicotomia: dicotomia.toUpperCase(),
+              obtido: resultados[dicotomia],
+              esperado: gabarito[tipo][dicotomia]
+            });
+          }
+        });
+      }
+      return destoantes;
+    }
+
+    function fadeInAudio(audio, duration) {
+      audio.volume = 0;
+      audio.play();
+      let volume = 0;
+      const increment = 0.3 / (duration * 60);
+      const fade = setInterval(() => {
+        volume += increment;
+        if (volume >= 0.3) {
+          volume = 0.3;
+          clearInterval(fade);
+        }
+        audio.volume = volume;
+      }, 1000 / 60);
+    }
+
+    function calcularResultados() {
+      const temperamento = calcularTemperamento();
+      const estilo = calcularEstilo();
+      const tipo = calcularTipoPersonalidade();
+
+      document.getElementById('temperamento').textContent = temperamento;
+      document.getElementById('estilo').textContent = estilo;
+      document.getElementById('orientacaoFinal').textContent = resultados.orientacao || 'PROCESSANDO...';
+
+      const typeBox = document.getElementById('typeBox');
+      typeBox.textContent = `TIPO: ${tipo}`;
+
+      const typeImage = document.getElementById('typeImage');
+      const typeTitle = document.getElementById('typeTitle');
+      const typeText = document.getElementById('typeText');
+
+      if (tipo !== 'PROCESSANDO...' && tipoDescrições[tipo]) {
+        typeImage.src = tipoDescrições[tipo].imagem;
+        typeImage.classList.add('visible');
+        typeTitle.textContent = tipoDescrições[tipo].titulo;
+        typeTitle.classList.add('visible');
+        typeText.textContent = tipoDescrições[tipo].texto;
+        typeText.classList.add('visible');
+      } else {
+        typeImage.src = '';
+        typeImage.classList.remove('visible');
+        typeTitle.textContent = '';
+        typeTitle.classList.remove('visible');
+        typeText.textContent = '';
+        typeText.classList.remove('visible');
+      }
+
+      if (tipo !== 'PROCESSANDO...' && tipo !== tipoAtual) {
+        tipoAtual = tipo;
+        if (audioAtual) {
+          audioAtual.pause();
+          audioAtual.currentTime = 0;
+        }
+        audioAtual = new Audio(`${tipo}.mp3`);
+        fadeInAudio(audioAtual, 4);
+      }
+
+      const destoantesContainer = document.getElementById('destoantesContainer');
+      destoantesContainer.innerHTML = '';
+      if (tipo !== 'PROCESSANDO...') {
+        const destoantes = verificarDestoantes(tipo);
+        destoantes.forEach(destoante => {
+          const div = document.createElement('div');
+          div.className = 'destoante-box';
+          div.textContent = `DICOTOMIA DESTOANTE: ${destoante.obtido}`;
+          div.addEventListener('click', () => {
+            const modal = document.getElementById('modalDestoante');
+            const modalText = document.getElementById('modalText');
+            modalText.textContent = `DICOTOMIA DESTOANTE: ${destoante.obtido}. O resultado que estaria em conformidade seria ${destoante.esperado}.`;
+            modal.style.display = 'flex';
+          });
+          destoantesContainer.appendChild(div);
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', inicializarNavegacao);
+  
+const gabaritoTIPOS = {
+  'ESTJ': ['SENTINELA', 'ESTRUTURADOR', 'INICIADOR'],
+  'ESFJ': ['SENTINELA', 'INAUGURADOR', 'INICIADOR'],
+  'ISTJ': ['SENTINELA', 'FINALIZADOR', 'RESPONDEDOR'],
+  'ISFJ': ['SENTINELA', 'BASTIDOR', 'RESPONDEDOR'],
+  'ESTP': ['ARTÍFICE', 'ESTRUTURADOR', 'INICIADOR'],
+  'ESFP': ['ARTÍFICE', 'INAUGURADOR', 'INICIADOR'],
+  'ISTP': ['ARTÍFICE', 'FINALIZADOR', 'RESPONDEDOR'],
+  'ISFP': ['ARTÍFICE', 'BASTIDOR', 'RESPONDEDOR'],
+  'ENTJ': ['ANALISTA', 'ESTRUTURADOR', 'INICIADOR'],
+  'ENTP': ['ANALISTA', 'INAUGURADOR', 'INICIADOR'],
+  'INTJ': ['ANALISTA', 'FINALIZADOR', 'RESPONDEDOR'],
+  'INTP': ['ANALISTA', 'BASTIDOR', 'RESPONDEDOR'],
+  'ENFJ': ['DIPLOMÁTICO', 'ESTRUTURADOR', 'INICIADOR'],
+  'ENFP': ['DIPLOMÁTICO', 'INAUGURADOR', 'INICIADOR'],
+  'INFJ': ['DIPLOMÁTICO', 'FINALIZADOR', 'RESPONDEDOR'],
+  'INFP': ['DIPLOMÁTICO', 'BASTIDOR', 'RESPONDEDOR']
+};
+
+</script>
+<script>
+function calcularResultadoFinal() {
+  const resultados = {
+    interpretacao: calcularResultadoUnico('interpretacao'),
+    enfoque: calcularResultadoUnico('enfoque'),
+    organizacao: calcularResultadoUnico('organizacao'),
+    comunicacao: calcularResultadoUnico('comunicacao'),
+    orientacao: calcularResultadoUnico('orientacao'),
+    postura: calcularResultadoUnico('postura')
+  };
+
+  const tipoFinal = calcularTipoMBTI(resultados);
+  const esperado = gabaritoTIPOS[tipoFinal];
+
+  const temperamento = esperado ? esperado[0] : calcularTemperamento();
+  const estilo = esperado ? esperado[1] : calcularEstilo();
+  const orientacao = esperado ? esperado[2] : resultados.orientacao;
+
+  document.getElementById('temperamento').textContent = temperamento;
+  document.getElementById('estilo').textContent = estilo;
+  document.getElementById('orientacaoFinal').textContent = orientacao;
+
+  exibirResultadoFinal(tipoFinal, resultados);
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const abaResultado = document.getElementById('resultado');
+  if (abaResultado && abaResultado.classList.contains('active')) {
+    calcularResultadoFinal();
+  }
+
+  // Ou, se o botão/aba for clicado:
+  const btnResultado = document.querySelector('[onclick*="resultado"]');
+  if (btnResultado) {
+    btnResultado.addEventListener('click', () => {
+      setTimeout(() => calcularResultadoFinal(), 300); // delay para garantir que os elementos carreguem
+    });
+  }
+});
+</script>
+<script>
+function exibirResultadoFinal(tipo, resultados) {
+  document.getElementById('typeBox').textContent = tipo;
+  document.getElementById('typeTitle').textContent = tipo;
+  document.getElementById('typeText').textContent = 'Descrição do tipo ' + tipo;
+  document.getElementById('typeImage').src = tipo + '.png';
+
+  const destoantes = verificarDestoantes(tipo, resultados);
+  const container = document.getElementById('destoantesContainer');
+  const conteudo = document.getElementById('destoanteConteudo');
+
+  if (destoantes.length > 0) {
+    container.style.display = 'block';
+    conteudo.innerHTML = '';
+
+    if (destoantes.length === 1) {
+      conteudo.innerHTML = '<div>' + destoantes[0] + '</div>';
+    } else {
+      destoantes.forEach(d => {
+        const bloco = document.createElement('div');
+        bloco.style.marginTop = '10px';
+        bloco.style.background = '#FFFACD';
+        bloco.style.padding = '8px';
+        bloco.style.borderRadius = '8px';
+        bloco.textContent = d;
+        conteudo.appendChild(bloco);
+      });
+    }
+  } else {
+    container.style.display = 'none';
+    conteudo.innerHTML = '';
+  }
+}
+</script>
+</html>
+
